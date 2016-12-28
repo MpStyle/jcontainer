@@ -2,6 +2,8 @@
 
 Lazy and naive container for the dependency injection.
 
+[![Build Status](https://travis-ci.org/MpStyle/jcontainer.svg?branch=master)](https://travis-ci.org/MpStyle/jcontainer)
+
 ## Installation
 
 ### Maven
