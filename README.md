@@ -5,8 +5,39 @@ Lazy and naive container for the dependency injection.
 ## Installation
 
 ### Maven
+```xml
+<repositories>
+    ...
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+    ...
+</repositories>
+...
+<dependency>
+    <groupId>com.github.MpStyle</groupId>
+    <artifactId>jcontainer</artifactId>
+    <version>v1.0.0</version>
+</dependency>
+```
 
 ### Gradle
+```json
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+...
+
+dependencies {
+    compile 'com.github.MpStyle:jcontainer:v1.0.0'
+}
+
+```
 
 ## Usages
 
