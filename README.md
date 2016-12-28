@@ -23,7 +23,7 @@ Lazy and naive container for the dependency injection.
 ```
 
 ### Gradle
-```json
+```
 allprojects {
     repositories {
         ...
