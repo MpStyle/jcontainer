@@ -2,7 +2,7 @@
 
 Lazy and naive container for the dependency injection.
 
-[![Build Status](https://travis-ci.org/MpStyle/jcontainer.svg?branch=master)](https://travis-ci.org/MpStyle/jcontainer)
+[![Build Status](https://travis-ci.org/MpStyle/jcontainer.svg?branch=master)](https://travis-ci.org/MpStyle/jcontainer) [![](https://jitpack.io/v/MpStyle/jcontainer.svg)](https://jitpack.io/#MpStyle/jcontainer)
 
 ## Installation
 
