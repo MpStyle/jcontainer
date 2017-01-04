@@ -9,12 +9,12 @@ import mpstyle.jcontainer.dummy.ServiceB;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ContainerFromIniTest {
+public class IniContainerTest {
   @Test
   public void test() {
     ClassLoader classLoader = getClass().getClassLoader();
     File file = new File(classLoader.getResource("definitions.ini").getFile());
-    Container c = Container.fromIni(file);
+    Container c = IniContainer.from(file);
 
     Assert.assertTrue(c != null);
     Assert.assertTrue(c.existsKey(ServiceA.class));

@@ -10,12 +10,12 @@ import mpstyle.jcontainer.dummy.ServiceB;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ContainerFromYamlTest {
+public class YamlContainerTest {
   @Test
   public void test() {
     ClassLoader classLoader = getClass().getClassLoader();
     File file = new File(classLoader.getResource("definitions.yml").getFile());
-    Container c = Container.fromYaml(file);
+    Container c = YamlContainer.from(file);
 
     Assert.assertTrue(c != null);
     Assert.assertTrue(c.existsKey(ServiceA.class));

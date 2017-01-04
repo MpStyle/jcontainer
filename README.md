@@ -20,7 +20,7 @@ Lazy and naive container for the dependency injection.
 <dependency>
     <groupId>com.github.MpStyle</groupId>
     <artifactId>jcontainer</artifactId>
-    <version>v1.0.0</version>
+    <version>v1.1.0</version>
 </dependency>
 ```
 
@@ -36,7 +36,7 @@ allprojects {
 ...
 
 dependencies {
-    compile 'com.github.MpStyle:jcontainer:v1.0.0'
+    compile 'com.github.MpStyle:jcontainer:v1.1.0'
 }
 
 ```
@@ -72,7 +72,46 @@ Foo foo =  container.get(Foo.class);
 
 ```
 
+### Annotation
+
+```java
+
+@Injectable
+public class ServiceF {
+  private final String test;
+
+  public ServiceF() {
+    test = "Hello world!";
+  }
+
+  public String getTest() {
+    return test;
+  }
+}
+
+@Injectable
+public class ServiceE {
+  @Inject
+  private ServiceF serviceF;
+
+  public ServiceE() {
+
+  }
+
+  public ServiceF getServiceF() {
+    return serviceF;
+  }
+}
+
+Container c = new Container();
+ServiceE serviceE = c.get(ServiceE.class);
+
+```
+
 ### Closure
+
+It is possible to add a Callable which wraps the logic of instantiation of an object:
+
 ```java
 class Closure implements Callable<Foo> {
     private Dummy dummy;
@@ -122,15 +161,22 @@ Foo foo =  UniqueContainer.getInstance().get(Foo.class);
 ### From INI file
 ```java
 File file = new File(...); // or String file = "path_to_file";
-Container c = Container.fromIni(file);
+Container c = IniContainer.from(file);
 ```
 
 ### From Yaml file
 ```java
 File file = new File(...); // or String file = "path_to_file";
-Container c = Container.fromYaml(file);
+Container c = YamlContainer.from(file);
 ```
 
 ## Version
 
-- 1.0.0
+### 1.1.0:
+- Created the new loader classes IniContainer and YamlContainer, to load a Container from INI and YAML files.
+- Deprecated Container#fromIni(String), Container#fromIni(File), Container#fromYaml(String) and Container#fromYaml(File) methods (they will be removed from 2.0.0 version).
+- Improved JavaDocs
+- Improved performance and security
+- Added support to inject using annotations.
+
+### 1.0.0

@@ -1,24 +1,20 @@
 package mpstyle.jcontainer;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
-
-import org.ini4j.Profile;
-import org.ini4j.Wini;
-import org.yaml.snakeyaml.Yaml;
+import mpstyle.jcontainer.annotation.Inject;
 
 /**
  * Lazy and naive container for the dependency injection.
  */
 public class Container {
-  private final Map<String, Callable> injectableObjects = new TreeMap<String, Callable>();
+  private final Map<String, ContainerCallable> injectableObjects = new TreeMap<String, ContainerCallable>();
 
   /**
    * Removes all defined instances and definitions.
@@ -34,52 +30,67 @@ public class Container {
    * @param clazz
    * @param <T>
    */
-  public <T> void addDefinition(Class<T> key, final Class<? extends T> clazz) {
-    if (!Injectable.class.isAssignableFrom(key)) {
-      throw new NotInjectableException(key);
-    }
+  public <T> void addDefinition(final Class<T> key, final Class<? extends T> clazz) {
+    validate(key);
 
-    injectableObjects.put(key.getCanonicalName(), new Callable<T>() {
-      public T call() throws Exception {
-        return getInstanceByClass(clazz);
+    injectableObjects.put(key.getCanonicalName(), new ContainerCallable<T>() {
+      public T call() {
+        T instance = getInstanceByClass(clazz);
+
+        // Don't move this "for" into {#link #getInstanceByClass} method, because it could permit to use Inject
+        // annotation in the Callable
+        for (Field field : clazz.getDeclaredFields()) {
+          if (field.getAnnotation(Inject.class) != null) {
+
+            field.setAccessible(true);
+
+            try {
+              field.set(instance, get(field.getType()));
+            } catch (IllegalAccessException e) {
+              // It is impossible to set the object market with @Inject
+            }
+          }
+        }
+
+        return instance;
       }
     });
   }
 
   /**
-   * Add an instance of a object.
+   * Add an instance of a <i>T</i>.
    *
    * @param key
    * @param obj
    * @param <T>
    */
   public <T> void addInstance(Class<T> key, final T obj) {
-    if (!(obj instanceof Injectable)) {
-      throw new NotInjectableException(key);
-    }
+    validate(key);
 
-    injectableObjects.put(key.getCanonicalName(), new Callable<T>() {
-      public T call() throws Exception {
+    injectableObjects.put(key.getCanonicalName(), new ContainerCallable<T>() {
+      public T call() {
         return obj;
       }
     });
   }
 
   /**
-   * Add a Closure to the container.
+   * Add a {@link Callable} to the container.
    *
    * @param key
    * @param closure
    * @param <T>
    */
-  public <T> void addClosure(Class<T> key, final Class<? extends Callable<T>> closure) {
-    if (!Injectable.class.isAssignableFrom(key)) {
-      throw new NotInjectableException(key);
-    }
+  public <T> void addClosure(final Class<T> key, final Class<? extends Callable<T>> closure) {
+    validate(key);
 
-    injectableObjects.put(key.getCanonicalName(), new Callable<T>() {
-      public T call() throws Exception {
-        return getInstanceByClosure(closure);
+    injectableObjects.put(key.getCanonicalName(), new ContainerCallable<T>() {
+      public T call() {
+        try {
+          return getInstanceByClass(closure).call();
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
       }
     });
   }
@@ -87,9 +98,9 @@ public class Container {
   /**
    * Return an instance of the class associated to the <i>$key</i>.
    *
-   * @param key
-   * @param <T>
-   * @return
+   * @param key The class to instantiate
+   * @param <T> The type of class to instantiate
+   * @return The instance of the class.
    */
   public <T> T get(Class<T> key) {
     if (!existsKey(key)) {
@@ -100,7 +111,6 @@ public class Container {
       T instance = (T) injectableObjects.get(key.getCanonicalName()).call();
 
       addInstance(key, instance);
-
       return instance;
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -108,81 +118,104 @@ public class Container {
   }
 
   /**
-   *
-   * @param key
-   * @param <T>
-   * @return
+   * Check if exists a way for the {@link Container} to instantiate an object of type <i>T</i>.
+   * 
+   * @param key The {@link Class} of the object
+   * @param <T> The object type
+   * @return Returns true if exists a way for the {@link Container} to instantiate an object of type <i>T</i>, otherwise
+   *         false.
    */
   public <T> boolean existsKey(Class<T> key) {
     return injectableObjects.containsKey(key.getCanonicalName());
   }
 
-  public static Container fromIni(String filename) {
-    return fromIni(new File(filename));
+  /**
+   * Load a container using an INI file with the definitions.<br />
+   * Use {@link IniContainer#from(String)} instead. The method will be removed in 2.0.0 version.
+   * 
+   * @param filePath The file path of the INI file
+   * @return
+   */
+  @Deprecated
+  public static Container fromIni(String filePath) {
+    return fromIni(new File(filePath));
   }
 
+  /**
+   * Load a container using an INI file with the definitions.<br />
+   * Use {@link IniContainer#from(File)} instead. The method will be removed in 2.0.0 version.
+   * 
+   * @param file
+   * @return
+   */
+  @Deprecated
   public static Container fromIni(File file) {
-    try {
-      Wini ini = new Wini(file);
-      Container c = new Container();
-
-      for (String sectionName : ini.keySet()) {
-        Profile.Section section = ini.get(sectionName);
-        for (String optionKey : section.keySet()) {
-          Class key = Class.forName(optionKey);
-          Class clazz = Class.forName(section.get(optionKey));
-          c.addDefinition(key, clazz);
-        }
-      }
-
-      return c;
-    } catch (Exception e) {
-      return null;
-    }
+    return IniContainer.from(file);
   }
 
-  public static Container fromYaml(String filename) {
-    return fromYaml(new File(filename));
+  /**
+   * Load a container using an YAML file with the definitions.<br />
+   * Use {@link YamlContainer#from(String)} instead. The method will be removed in 2.0.0 version.
+   *
+   * @param filePath The file path of the YAML file
+   * @return
+   */
+  @Deprecated
+  public static Container fromYaml(String filePath) {
+    return fromYaml(new File(filePath));
   }
 
+  /**
+   * Load a container using an YAML file with the definitions.<br />
+   * Use {@link YamlContainer#from(File)} instead. The method will be removed in 2.0.0 version.
+   * 
+   * @param file
+   * @return
+   */
+  @Deprecated
   public static Container fromYaml(File file) {
-    try {
-      InputStream input = new FileInputStream(file);
-      Yaml yaml = new Yaml();
-      Map<String, String> map = (Map<String, String>) yaml.load(input);
-      Container c = new Container();
+    return YamlContainer.from(file);
+  }
 
-      for (Map.Entry<String, String> entry : map.entrySet()) {
-        Class key = Class.forName(entry.getKey());
-        Class clazz = Class.forName(entry.getValue());
-        c.addDefinition(key, clazz);
-      }
-
-      return c;
-    } catch (Exception e) {
-      return null;
+  /**
+   * If <i>key</i> is not an instance of {@link Injectable} or have not {@link mpstyle.jcontainer.annotation.Injectable}
+   * annotation will be throw a {@link NotInjectableException} exception.
+   *
+   * @param <T> The type of the class to validate
+   * @param key The class to validate
+   */
+  private <T> void validate(Class<T> key) {
+    if (!Injectable.class.isAssignableFrom(key)
+        && !key.isAnnotationPresent(mpstyle.jcontainer.annotation.Injectable.class)) {
+      throw new NotInjectableException(key);
     }
   }
 
-  private <T> T getInstanceByClosure(Class<? extends Callable<T>> closure) throws Exception {
-    Callable<T> callable = getInstanceByClass(closure);
-    return callable.call();
-  }
-
+  /**
+   * The magic method: instantiates an object of class <i>clazz</i>.<br>
+   * It will try to use each constructor to have the instance. After that, it will set the member marked by
+   * {@link Inject} annotation.
+   * 
+   * @param clazz The class to instantiate
+   * @param <T> The type of the class to instantiate
+   * @return The instance of class
+   */
   private <T> T getInstanceByClass(Class<T> clazz) {
     T instance = null;
     Constructor<T>[] allConstructors = (Constructor<T>[]) clazz.getDeclaredConstructors();
+
     for (Constructor<T> ctor : allConstructors) {
       try {
         List<Object> parameters = new ArrayList<Object>();
         Class<?>[] pType = ctor.getParameterTypes();
-        for (Class<?> aPType : pType) {
+
+        for (Class aPType : pType) {
           parameters.add(get(aPType));
         }
 
         instance = ctor.newInstance(parameters.toArray());
       } catch (Exception e) {
-        e.printStackTrace();
+        // Try with another construct. The default one could not throw exception.
       }
     }
 
