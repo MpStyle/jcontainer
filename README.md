@@ -20,7 +20,7 @@ Lazy and naive container for the dependency injection.
 <dependency>
     <groupId>com.github.MpStyle</groupId>
     <artifactId>jcontainer</artifactId>
-    <version>v1.1.0</version>
+    <version>v2.0.0</version>
 </dependency>
 ```
 
@@ -36,7 +36,7 @@ allprojects {
 ...
 
 dependencies {
-    compile 'com.github.MpStyle:jcontainer:v1.1.0'
+    compile 'com.github.MpStyle:jcontainer:v2.0.0'
 }
 
 ```
@@ -113,19 +113,19 @@ ServiceE serviceE = c.get(ServiceE.class);
 It is possible to add a Callable which wraps the logic of instantiation of an object:
 
 ```java
-class Closure implements Callable<Foo> {
+class DummyClosure implements Closure<Foo> {
     private Dummy dummy;
 
-    public Closure(Dummy dummy) {
+    public DummyClosure(Dummy dummy) {
       this.dummy = dummy;
     }
 
-    public Foo call() throws Exception {
+    public Foo call() {
       return new Bar(dummy);
     }
 }
 
-UniqueContainer.getInstance().addClosure(Foo.class, Closure.class);
+UniqueContainer.getInstance().addClosure(Foo.class, DummyClosure.class);
 
 Foo foo = UniqueContainer.getInstance().get(Foo.class);
 ```
@@ -171,6 +171,9 @@ Container c = YamlContainer.from(file);
 ```
 
 ## Version
+
+### 2.0.0:
+- Change signatures of addClosure methods.
 
 ### 1.1.0:
 - Created the new loader classes IniContainer and YamlContainer, to load a Container from INI and YAML files.

@@ -1,7 +1,5 @@
 package mpstyle.jcontainer;
 
-import java.util.concurrent.Callable;
-
 public class ReadMeTest {
   interface Foo extends Injectable {
   }
@@ -30,20 +28,20 @@ public class ReadMeTest {
     Foo foo = container.get(Foo.class);
   }
 
-  class Closure implements Callable<Foo> {
+  class DummyClosure implements Closure<Foo> {
     private Dummy dummy;
 
-    public Closure(Dummy dummy) {
+    public DummyClosure(Dummy dummy) {
       this.dummy = dummy;
     }
 
-    public Foo call() throws Exception {
+    public Foo call() {
       return new Bar(dummy);
     }
   }
 
   public void test_02() {
-    UniqueContainer.getInstance().addClosure(Foo.class, Closure.class);
+    UniqueContainer.getInstance().addClosure(Foo.class, DummyClosure.class);
 
     Foo foo = UniqueContainer.getInstance().get(Foo.class);
   }

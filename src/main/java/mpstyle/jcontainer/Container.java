@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.Callable;
 import mpstyle.jcontainer.annotation.Inject;
 
 /**
  * Lazy and naive container for the dependency injection.
  */
 public class Container {
-  private final Map<String, ContainerCallable> injectableObjects = new TreeMap<String, ContainerCallable>();
+  private final Map<String, Closure> injectableObjects = new TreeMap<String, Closure>();
 
   /**
    * Removes all defined instances and definitions.
@@ -33,7 +32,7 @@ public class Container {
   public <T> void addDefinition(final Class<T> key, final Class<? extends T> clazz) {
     validate(key);
 
-    injectableObjects.put(key.getCanonicalName(), new ContainerCallable<T>() {
+    injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         T instance = getInstanceByClass(clazz);
 
@@ -67,7 +66,7 @@ public class Container {
   public <T> void addInstance(Class<T> key, final T obj) {
     validate(key);
 
-    injectableObjects.put(key.getCanonicalName(), new ContainerCallable<T>() {
+    injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         return obj;
       }
@@ -75,19 +74,40 @@ public class Container {
   }
 
   /**
-   * Add a {@link Callable} to the container.
+   * Add a {@link Closure} class to the container.
    *
    * @param key
    * @param closure
    * @param <T>
    */
-  public <T> void addClosure(final Class<T> key, final Class<? extends Callable<T>> closure) {
+  public <T> void addClosure(final Class<T> key, final Class<? extends Closure<T>> closure) {
     validate(key);
 
-    injectableObjects.put(key.getCanonicalName(), new ContainerCallable<T>() {
+    injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         try {
           return getInstanceByClass(closure).call();
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
+  }
+
+  /**
+   * Add a {@link Closure} instance to the container.
+   *
+   * @param key
+   * @param closure
+   * @param <T>
+   */
+  public <T> void addClosure(final Class<T> key, final Closure<T> closure) {
+    validate(key);
+
+    injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
+      public T call() {
+        try {
+          return closure.call();
         } catch (Exception e) {
           throw new RuntimeException(e);
         }

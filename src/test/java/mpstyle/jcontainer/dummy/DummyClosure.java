@@ -1,11 +1,11 @@
 package mpstyle.jcontainer.dummy;
 
-import java.util.concurrent.Callable;
+import mpstyle.jcontainer.Closure;
 
-public class Closure implements Callable<ServiceA> {
+public class DummyClosure implements Closure<ServiceA> {
   private final ServiceC serviceC;
 
-  public Closure(ServiceC serviceC) {
+  public DummyClosure(ServiceC serviceC) {
     this.serviceC = serviceC;
   }
 
@@ -15,7 +15,7 @@ public class Closure implements Callable<ServiceA> {
    * @return computed result
    * @throws Exception if unable to compute a result
    */
-  public ServiceA call() throws Exception {
+  public ServiceA call() {
     return new ServiceB(serviceC);
   }
 }
