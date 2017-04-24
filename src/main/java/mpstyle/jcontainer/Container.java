@@ -7,12 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import mpstyle.jcontainer.annotation.Inject;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Lazy and naive container for the dependency injection.
  */
 public class Container {
+  private final static Logger LOGGER = LogManager.getRootLogger();
   private final Map<String, Closure> injectableObjects = new TreeMap<String, Closure>();
 
   /**
@@ -109,6 +114,7 @@ public class Container {
         try {
           return closure.call();
         } catch (Exception e) {
+          LOGGER.debug(e);
           throw new RuntimeException(e);
         }
       }
@@ -133,6 +139,7 @@ public class Container {
       addInstance(key, instance);
       return instance;
     } catch (Exception e) {
+      LOGGER.debug(e);
       throw new RuntimeException(e);
     }
   }
@@ -235,6 +242,7 @@ public class Container {
 
         instance = ctor.newInstance(parameters.toArray());
       } catch (Exception e) {
+        LOGGER.debug(e);
         // Try with another construct. The default one could not throw exception.
       }
     }
