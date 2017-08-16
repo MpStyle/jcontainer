@@ -14,7 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Lazy and naive container for the dependency injection.
+ * Lazy and naive container for the dependency injection.<br />
+ * Use the Flyweight design pattern to store a single instance of injectable classes.
  */
 public class Container {
   private final static Logger LOGGER = LogManager.getRootLogger();
