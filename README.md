@@ -1,6 +1,7 @@
 # jContainer
 
 Lazy and naive container for the dependency injection.
+Use the flyweight design pattern to store a single instance of injectable classes.
 
 [![Build Status](https://travis-ci.org/MpStyle/jcontainer.svg?branch=master)](https://travis-ci.org/MpStyle/jcontainer) [![](https://jitpack.io/v/MpStyle/jcontainer.svg)](https://jitpack.io/#MpStyle/jcontainer)
 
