@@ -9,6 +9,7 @@ import mpstyle.jcontainer.dummy.ServiceB;
 import mpstyle.jcontainer.dummy.ServiceC;
 import mpstyle.jcontainer.dummy.ServiceD;
 import mpstyle.jcontainer.dummy.ServiceE;
+import mpstyle.jcontainer.dummy.ServiceG;
 import org.junit.Test;
 
 public class ContainerTest {
@@ -60,10 +61,18 @@ public class ContainerTest {
 
     @Test
     public void testAnnotation() {
-        Container c = new Container();
-        ServiceE serviceE = c.get(ServiceE.class);
-        assertTrue(serviceE != null);
-        assertTrue(serviceE.getServiceF() != null);
-        assertEquals("Hello world!", serviceE.getServiceF().getTest());
+      Container c = new Container();
+      ServiceE serviceE = c.get(ServiceE.class);
+      assertTrue(serviceE != null);
+      assertTrue(serviceE.getServiceF() != null);
+      assertEquals("Hello world!", serviceE.getServiceF().getTest());
     }
+
+  @Test
+  public void testMultipleConstructors() {
+    Container c = new Container();
+    ServiceG serviceG = c.get(ServiceG.class);
+    assertTrue(serviceG != null);
+    assertTrue(serviceG.servicec != null);
+  }
 }

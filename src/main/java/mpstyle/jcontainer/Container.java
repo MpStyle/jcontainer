@@ -1,5 +1,7 @@
 package mpstyle.jcontainer;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -7,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import mpstyle.jcontainer.annotation.Inject;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,6 +53,7 @@ public class Container {
               field.set(instance, get(field.getType()));
             } catch (IllegalAccessException e) {
               // It is impossible to set the object market with @Inject
+              LOGGER.debug(e);
             }
           }
         }
@@ -110,16 +111,7 @@ public class Container {
   public <T> void addClosure(final Class<T> key, final Closure<T> closure) {
     validate(key);
 
-    injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
-      public T call() {
-        try {
-          return closure.call();
-        } catch (Exception e) {
-          LOGGER.debug(e);
-          throw new RuntimeException(e);
-        }
-      }
-    });
+    injectableObjects.put(key.getCanonicalName(), closure);
   }
 
   /**
@@ -231,6 +223,7 @@ public class Container {
   private <T> T getInstanceByClass(Class<T> clazz) {
     T instance = null;
     Constructor<T>[] allConstructors = (Constructor<T>[]) clazz.getDeclaredConstructors();
+    String canonicalName = clazz.getCanonicalName();
 
     for (Constructor<T> ctor : allConstructors) {
       try {
@@ -242,10 +235,15 @@ public class Container {
         }
 
         instance = ctor.newInstance(parameters.toArray());
+
+        break;
       } catch (Exception e) {
-        LOGGER.debug(e);
-        // Try with another construct. The default one could not throw exception.
+        LOGGER.debug(format("Invalid constructor %s for class %s", ctor.getName(), canonicalName), e);
       }
+    }
+
+    if (instance == null) {
+      throw new RuntimeException(format("Error while instantiate type %s", canonicalName));
     }
 
     return instance;
