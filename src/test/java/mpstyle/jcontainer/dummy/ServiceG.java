@@ -1,8 +1,5 @@
 package mpstyle.jcontainer.dummy;
 
-import mpstyle.jcontainer.annotation.Injectable;
-
-@Injectable
 public class ServiceG {
   public final ServiceC servicec;
 

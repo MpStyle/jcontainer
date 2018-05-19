@@ -1,14 +1,14 @@
 package mpstyle.jcontainer;
 
 public class ReadMeTest {
-  interface Foo extends Injectable {
+  interface Foo {
   }
 
-  class Dummy implements Injectable {
+  class Dummy {
   }
 
   class Bar implements Foo {
-    private Dummy dummy;
+    private final Dummy dummy;
 
     public Bar(Dummy d) {
       this.dummy = d;
@@ -29,7 +29,7 @@ public class ReadMeTest {
   }
 
   class DummyClosure implements Closure<Foo> {
-    private Dummy dummy;
+    private final Dummy dummy;
 
     public DummyClosure(Dummy dummy) {
       this.dummy = dummy;

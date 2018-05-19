@@ -1,6 +1,8 @@
 package mpstyle.jcontainer;
 
-import static java.lang.String.format;
+import mpstyle.jcontainer.annotation.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -9,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import mpstyle.jcontainer.annotation.Inject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import static java.lang.String.format;
 
 /**
  * Lazy and naive container for the dependency injection.<br />
@@ -36,8 +37,6 @@ public class Container {
    * @param <T>
    */
   public <T> void addDefinition(final Class<T> key, final Class<? extends T> clazz) {
-    validate(key);
-
     injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         T instance = getInstanceByClass(clazz);
@@ -71,8 +70,6 @@ public class Container {
    * @param <T>
    */
   public <T> void addInstance(Class<T> key, final T obj) {
-    validate(key);
-
     injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         return obj;
@@ -88,8 +85,6 @@ public class Container {
    * @param <T>
    */
   public <T> void addClosure(final Class<T> key, final Class<? extends Closure<T>> closure) {
-    validate(key);
-
     injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         try {
@@ -109,8 +104,6 @@ public class Container {
    * @param <T>
    */
   public <T> void addClosure(final Class<T> key, final Closure<T> closure) {
-    validate(key);
-
     injectableObjects.put(key.getCanonicalName(), closure);
   }
 
@@ -195,20 +188,6 @@ public class Container {
   @Deprecated
   public static Container fromYaml(File file) {
     return YamlContainer.from(file);
-  }
-
-  /**
-   * If <i>key</i> is not an instance of {@link Injectable} or have not {@link mpstyle.jcontainer.annotation.Injectable}
-   * annotation will be throw a {@link NotInjectableException} exception.
-   *
-   * @param <T> The type of the class to validate
-   * @param key The class to validate
-   */
-  private <T> void validate(Class<T> key) {
-    if (!Injectable.class.isAssignableFrom(key)
-        && !key.isAnnotationPresent(mpstyle.jcontainer.annotation.Injectable.class)) {
-      throw new NotInjectableException(key);
-    }
   }
 
   /**

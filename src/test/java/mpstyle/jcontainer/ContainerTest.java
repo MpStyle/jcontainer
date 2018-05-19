@@ -1,20 +1,14 @@
 package mpstyle.jcontainer;
 
+import mpstyle.jcontainer.dummy.*;
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import mpstyle.jcontainer.dummy.DummyClosure;
-import mpstyle.jcontainer.dummy.ServiceA;
-import mpstyle.jcontainer.dummy.ServiceB;
-import mpstyle.jcontainer.dummy.ServiceC;
-import mpstyle.jcontainer.dummy.ServiceD;
-import mpstyle.jcontainer.dummy.ServiceE;
-import mpstyle.jcontainer.dummy.ServiceG;
-import org.junit.Test;
-
 public class ContainerTest {
     @Test
-    public void addDefinition_01() throws Exception {
+    public void addDefinition_01() {
         Container c = new Container();
         c.addDefinition(ServiceA.class, ServiceB.class);
 
@@ -23,14 +17,8 @@ public class ContainerTest {
         assertTrue(serviceA instanceof ServiceB);
     }
 
-    @Test(expected = NotInjectableException.class)
-    public void addDefinition_02() throws Exception {
-        Container c = new Container();
-        c.addDefinition(ServiceD.class, ServiceD.class);
-    }
-
     @Test
-    public void addInstance() throws Exception {
+    public void addInstance() {
         Container c = new Container();
         c.addInstance(ServiceA.class, new ServiceB(new ServiceC()));
 
@@ -40,7 +28,7 @@ public class ContainerTest {
     }
 
     @Test
-    public void addClosure_01() throws Exception {
+    public void addClosure_01() {
         Container c = new Container();
         c.addClosure(ServiceA.class, DummyClosure.class);
 
@@ -50,7 +38,7 @@ public class ContainerTest {
     }
 
     @Test
-    public void addClosure_02() throws Exception {
+    public void addClosure_02() {
         Container c = new Container();
         c.addClosure(ServiceA.class, new DummyClosure(new ServiceC()));
 
