@@ -1,8 +1,6 @@
 package mpstyle.jcontainer;
 
-import mpstyle.jcontainer.annotation.Inject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import static java.lang.String.format;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -11,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static java.lang.String.format;
+import mpstyle.jcontainer.annotation.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Lazy and naive container for the dependency injection.<br />
@@ -217,7 +216,7 @@ public class Container {
 
         break;
       } catch (Exception e) {
-        LOGGER.debug(format("Invalid constructor %s for class %s", ctor.getName(), canonicalName), e);
+        LOGGER.debug(format("Invalid constructor %s", ctor.toString()), e);
       }
     }
 

@@ -21,7 +21,7 @@ Use the flyweight design pattern to store a single instance of injectable classe
 <dependency>
     <groupId>com.github.MpStyle</groupId>
     <artifactId>jcontainer</artifactId>
-    <version>v3.0.1</version>
+    <version>v3.0.2</version>
 </dependency>
 ```
 
