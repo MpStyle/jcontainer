@@ -48,9 +48,9 @@ Simple usage of container:
 
 ```java
 
-interface Foo extends Injectable {}
+interface Foo {}
 
-class Dummy implements Injectable {}
+class Dummy {}
 
 class Bar implements Foo {
     private Dummy dummy;
@@ -77,7 +77,6 @@ Foo foo =  container.get(Foo.class);
 
 ```java
 
-@Injectable
 public class ServiceF {
   private final String test;
 
@@ -90,7 +89,6 @@ public class ServiceF {
   }
 }
 
-@Injectable
 public class ServiceE {
   @Inject
   private ServiceF serviceF;
@@ -137,9 +135,9 @@ Using the wrapper of singleton instance:
 
 ```java
 
-interface Foo extends Injectable {}
+interface Foo {}
 
-class Dummy implements Injectable {}
+class Dummy {}
 
 class Bar implements Foo {
     public Dummy dummy;
