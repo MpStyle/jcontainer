@@ -21,7 +21,7 @@ Use the flyweight design pattern to store a single instance of injectable classe
 <dependency>
     <groupId>com.github.MpStyle</groupId>
     <artifactId>jcontainer</artifactId>
-    <version>v3.0.2</version>
+    <version>v3.0.3</version>
 </dependency>
 ```
 
@@ -169,16 +169,3 @@ File file = new File(...); // or String file = "path_to_file";
 Container c = YamlContainer.from(file);
 ```
 
-## Version
-
-### 2.0.0:
-- Change signatures of addClosure methods.
-
-### 1.1.0:
-- Created the new loader classes IniContainer and YamlContainer, to load a Container from INI and YAML files.
-- Deprecated Container#fromIni(String), Container#fromIni(File), Container#fromYaml(String) and Container#fromYaml(File) methods (they will be removed from 2.0.0 version).
-- Improved JavaDocs
-- Improved performance and security
-- Added support to inject using annotations.
-
-### 1.0.0

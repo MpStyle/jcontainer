@@ -5,10 +5,10 @@ import static java.lang.String.format;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import mpstyle.jcontainer.annotation.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Container {
   private final static Logger LOGGER = LogManager.getRootLogger();
-  private final Map<String, Closure> injectableObjects = new TreeMap<String, Closure>();
+  private final Map<String, Closure> injectableObjects = new ConcurrentHashMap<String, Closure>();
 
   /**
    * Removes all defined instances and definitions.
@@ -30,7 +30,7 @@ public class Container {
 
   /**
    * Add a class definition
-   * 
+   *
    * @param key
    * @param clazz
    * @param <T>
@@ -131,11 +131,11 @@ public class Container {
 
   /**
    * Check if exists a way for the {@link Container} to instantiate an object of type <i>T</i>.
-   * 
+   *
    * @param key The {@link Class} of the object
    * @param <T> The object type
    * @return Returns true if exists a way for the {@link Container} to instantiate an object of type <i>T</i>, otherwise
-   *         false.
+   * false.
    */
   public <T> boolean existsKey(Class<T> key) {
     return injectableObjects.containsKey(key.getCanonicalName());
@@ -144,7 +144,7 @@ public class Container {
   /**
    * Load a container using an INI file with the definitions.<br />
    * Use {@link IniContainer#from(String)} instead. The method will be removed in 2.0.0 version.
-   * 
+   *
    * @param filePath The file path of the INI file
    * @return
    */
@@ -156,7 +156,7 @@ public class Container {
   /**
    * Load a container using an INI file with the definitions.<br />
    * Use {@link IniContainer#from(File)} instead. The method will be removed in 2.0.0 version.
-   * 
+   *
    * @param file
    * @return
    */
@@ -180,7 +180,7 @@ public class Container {
   /**
    * Load a container using an YAML file with the definitions.<br />
    * Use {@link YamlContainer#from(File)} instead. The method will be removed in 2.0.0 version.
-   * 
+   *
    * @param file
    * @return
    */
@@ -193,9 +193,9 @@ public class Container {
    * The magic method: instantiates an object of class <i>clazz</i>.<br>
    * It will try to use each constructor to have the instance. After that, it will set the member marked by
    * {@link Inject} annotation.
-   * 
+   *
    * @param clazz The class to instantiate
-   * @param <T> The type of the class to instantiate
+   * @param <T>   The type of the class to instantiate
    * @return The instance of class
    */
   private <T> T getInstanceByClass(Class<T> clazz) {
@@ -205,7 +205,7 @@ public class Container {
 
     for (Constructor<T> ctor : allConstructors) {
       try {
-        List<Object> parameters = new ArrayList<Object>();
+        List<Object> parameters = new CopyOnWriteArrayList<Object>();
         Class<?>[] pType = ctor.getParameterTypes();
 
         for (Class aPType : pType) {
