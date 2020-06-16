@@ -10,4 +10,12 @@ public class UniqueContainer {
 
     return instance;
   }
+
+  public static synchronized Container getInstance(boolean autoInstance) {
+    if (instance == null) {
+      instance = new Container(autoInstance);
+    }
+
+    return instance;
+  }
 }

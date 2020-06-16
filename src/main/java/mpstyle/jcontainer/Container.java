@@ -16,11 +16,29 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Lazy and naive container for the dependency injection.<br />
- * Use the Flyweight design pattern to store a single instance of injectable classes.
+ * Use the Flyweight design pattern to store a single instance of injectable classes.<br />
+ * If the <i>autoContainer</i> is true and if there is not a definition for the request class, the container will try to instantiate the object, otherwise will be throw a RuntimeException
  */
 public class Container {
     private final static Logger LOGGER = LogManager.getRootLogger();
     private final Map<String, InjectableObjectProps> injectableObjects = new ConcurrentHashMap<String, InjectableObjectProps>();
+    private final boolean autoInstance;
+
+    /**
+     * Create a container with autoInstance set to <i>true</i>.
+     */
+    public Container() {
+        this(true);
+    }
+
+    /**
+     * Create a container
+     *
+     * @param autoInstance Sets the autoInstance property
+     */
+    public Container(boolean autoInstance) {
+        this.autoInstance = autoInstance;
+    }
 
     /**
      * Removes all defined instances and definitions.
@@ -152,6 +170,10 @@ public class Container {
      */
     public <T> T get(Class<T> key) {
         if (!existsKey(key)) {
+            if (!autoInstance) {
+                throw new RuntimeException("There is not a definition for class " + key.getCanonicalName());
+            }
+
             addDefinition(key, key);
         }
 

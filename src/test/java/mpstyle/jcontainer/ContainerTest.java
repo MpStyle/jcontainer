@@ -1,10 +1,10 @@
 package mpstyle.jcontainer;
 
 import mpstyle.jcontainer.dummy.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ContainerTest {
     @Test
@@ -49,18 +49,18 @@ public class ContainerTest {
 
     @Test
     public void testAnnotation() {
-      Container c = new Container();
-      ServiceE serviceE = c.get(ServiceE.class);
-      assertTrue(serviceE != null);
-      assertTrue(serviceE.getServiceF() != null);
-      assertEquals("Hello world!", serviceE.getServiceF().getTest());
+        Container c = new Container();
+        ServiceE serviceE = c.get(ServiceE.class);
+        assertTrue(serviceE != null);
+        assertTrue(serviceE.getServiceF() != null);
+        assertEquals("Hello world!", serviceE.getServiceF().getTest());
     }
 
-  @Test
-  public void testMultipleConstructors() {
-    Container c = new Container();
-    ServiceG serviceG = c.get(ServiceG.class);
-    assertTrue(serviceG != null);
-    assertTrue(serviceG.servicec != null);
-  }
+    @Test
+    public void testMultipleConstructors() {
+        Container c = new Container();
+        ServiceG serviceG = c.get(ServiceG.class);
+        assertTrue(serviceG != null);
+        assertTrue(serviceG.servicec != null);
+    }
 }
