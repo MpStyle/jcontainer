@@ -35,7 +35,7 @@ public class Container {
    * @param clazz
    * @param <T>
    */
-  public <T> void addDefinition(final Class<T> key, final Class<? extends T> clazz) {
+  public <T> Container addDefinition(final Class<T> key, final Class<? extends T> clazz) {
     injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         T instance = getInstanceByClass(clazz);
@@ -59,6 +59,8 @@ public class Container {
         return instance;
       }
     });
+
+    return this;
   }
 
   /**
@@ -68,12 +70,14 @@ public class Container {
    * @param obj
    * @param <T>
    */
-  public <T> void addInstance(Class<T> key, final T obj) {
+  public <T> Container addInstance(Class<T> key, final T obj) {
     injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         return obj;
       }
     });
+
+    return this;
   }
 
   /**
@@ -83,7 +87,7 @@ public class Container {
    * @param closure
    * @param <T>
    */
-  public <T> void addClosure(final Class<T> key, final Class<? extends Closure<T>> closure) {
+  public <T> Container addClosure(final Class<T> key, final Class<? extends Closure<T>> closure) {
     injectableObjects.put(key.getCanonicalName(), new Closure<T>() {
       public T call() {
         try {
@@ -93,6 +97,8 @@ public class Container {
         }
       }
     });
+
+    return this;
   }
 
   /**
@@ -102,8 +108,10 @@ public class Container {
    * @param closure
    * @param <T>
    */
-  public <T> void addClosure(final Class<T> key, final Closure<T> closure) {
+  public <T> Container addClosure(final Class<T> key, final Closure<T> closure) {
     injectableObjects.put(key.getCanonicalName(), closure);
+
+    return this;
   }
 
   /**
