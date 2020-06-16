@@ -1,21 +1,24 @@
 package mpstyle.jcontainer;
 
+/**
+ * Utily class, create a singleton container.
+ */
 public class UniqueContainer {
-  private static Container instance = null;
+    private static Container instance = null;
 
-  public static synchronized Container getInstance() {
-    if (instance == null) {
-      instance = new Container();
+    public static synchronized Container getInstance() {
+        if (instance == null) {
+            instance = new Container();
+        }
+
+        return instance;
     }
 
-    return instance;
-  }
+    public static synchronized Container getInstance(boolean autoInstance) {
+        if (instance == null) {
+            instance = new Container(autoInstance);
+        }
 
-  public static synchronized Container getInstance(boolean autoInstance) {
-    if (instance == null) {
-      instance = new Container(autoInstance);
+        return instance;
     }
-
-    return instance;
-  }
 }
