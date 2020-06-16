@@ -58,6 +58,14 @@ public class Container {
         return this.addDefinition(key, clazz, true);
     }
 
+    public <T> Container addDefinition(final Class<T> clazz) {
+        return this.addDefinition(clazz, clazz, true);
+    }
+
+    public <T> Container addDefinition(final Class<T> clazz, boolean isSingleton) {
+        return this.addDefinition(clazz, clazz, isSingleton);
+    }
+
     public <T> Container addDefinition(final Class<T> key, final Class<? extends T> clazz, boolean isSingleton) {
         injectableObjects.put(
                 key.getCanonicalName(),
@@ -109,6 +117,10 @@ public class Container {
         injectableObjects.put(key.getCanonicalName(), props);
 
         return this;
+    }
+
+    public <T> Container addInstance(final T obj) {
+        return this.addInstance((Class<T>)obj.getClass(), obj);
     }
 
     /**
