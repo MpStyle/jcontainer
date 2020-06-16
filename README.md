@@ -37,7 +37,7 @@ allprojects {
 ...
 
 dependencies {
-    compile 'com.github.MpStyle:jcontainer:v2.0.0'
+    compile 'com.github.MpStyle:jcontainer:v3.1.0'
 }
 
 ```
