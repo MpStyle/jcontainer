@@ -21,7 +21,7 @@ Use the flyweight design pattern to store a single instance of injectable classe
 <dependency>
     <groupId>com.github.MpStyle</groupId>
     <artifactId>jcontainer</artifactId>
-    <version>v3.0.3</version>
+    <version>v3.1.0</version>
 </dependency>
 ```
 
@@ -72,6 +72,16 @@ Foo foo =  container.get(Foo.class);
 // foo is an instance of Bar, and dummy property of Bar is initialized as an instance of Dummy.
 
 ```
+
+### Container with auto-instance
+
+Using:
+
+```java
+Container container = new Container(true);
+```
+
+The container can not instantiate an object if there is not a definition for it. 
 
 ### Annotation
 
