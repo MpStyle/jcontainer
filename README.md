@@ -1,9 +1,13 @@
 # jContainer
 
-Lazy and naive container for the dependency injection.
+Lazy and naive container for the dependency injection for Android and Java 8 and above.
 Use the flyweight design pattern to store a single instance of injectable classes.
 
-[![Build Status](https://travis-ci.org/MpStyle/jcontainer.svg?branch=master)](https://travis-ci.org/MpStyle/jcontainer) [![](https://jitpack.io/v/MpStyle/jcontainer.svg)](https://jitpack.io/#MpStyle/jcontainer)
+**Last version:** 3.1.1
+
+**License:** MIT
+
+**Continuous Integration:** [![Build Status](https://travis-ci.org/MpStyle/jcontainer.svg?branch=master)](https://travis-ci.org/MpStyle/jcontainer) [![](https://jitpack.io/v/MpStyle/jcontainer.svg)](https://jitpack.io/#MpStyle/jcontainer)
 
 ## Installation
 
@@ -179,3 +183,11 @@ File file = new File(...); // or String file = "path_to_file";
 Container c = YamlContainer.from(file);
 ```
 
+## Release a new version
+
+Steps:
+* Change version in pom.xml file
+* Change version in README.md file
+* Check the build result on [Travis CI](https://travis-ci.org/github/MpStyle/jcontainer)
+* Draft a new release in GitHub
+* Check the build on [JitPack](https://jitpack.io/#MpStyle/jcontainer)
